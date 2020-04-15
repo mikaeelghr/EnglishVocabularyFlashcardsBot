@@ -1,4 +1,3 @@
-# zabanPassword1223324
 import string
 import re
 
