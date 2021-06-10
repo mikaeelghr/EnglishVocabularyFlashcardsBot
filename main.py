@@ -1,11 +1,13 @@
+import getopt
 import glob
+import os
+import sys
 
 import TelegramConversations
 from Models.Book import Book
 from Models.Lesson import Lesson
-from Models.Question import Question
 from Models.Reading import Reading
-from Models.Word import add_word, all_words
+from Models.Word import add_word
 from Models.WordOccur import WordOccur
 
 
@@ -29,10 +31,39 @@ def import_data():
                                  [word_name.strip() for word_name in word_array[2].split(',')])
 
 
-import_data()
+def main(argv):
+    proxy = ''
+    bot_token = None
+    try:
+        opts, args = getopt.getopt(argv, "h:p:t:", ["proxy=", "token="])
+    except getopt.GetoptError:
+        print('main.py -p <proxy> -t <bot_token>')
+        sys.exit(2)
+    for opt, arg in opts:
+        if opt == '-h':
+            print('usage: main.py -p <proxy> -t <bot_token>\nexample: python3 main.py '
+                  '-p http://127.0.0.1:37864/ -t 270485614:AAHfiqksKZ8WmR2zSjiQ7_v4TMAKdiHm9T0')
+            sys.exit()
+        elif opt in ("-p", "--proxy"):
+            proxy = arg
+        elif opt in ("-t", "--token"):
+            bot_token = arg
+    if bot_token is None:
+        print('bot token is necessary,\n'
+              'usage: main.py -p <proxy> -t <bot_token>\nexample: python3 main.py '
+              '-p http://127.0.0.1:37864/ -t 270485614:AAHfiqksKZ8WmR2zSjiQ7_v4TMAKdiHm9T0')
+        sys.exit(2)
 
-print(Question(1, 1, ["Inside Reading 4"], ["Unit 7", "Unit 8"]).__dict__)
+    if proxy is not None:
+        os.environ['http_proxy'] = proxy
+        os.environ['HTTP_PROXY'] = proxy
+        os.environ['https_proxy'] = proxy
+        os.environ['HTTPS_PROXY'] = proxy
 
-print(all_words['principle'].__dict__)
+    import_data()
 
-TelegramConversations.start_telegram_bot()
+    TelegramConversations.start_telegram_bot(bot_token)
+
+
+if __name__ == "__main__":
+    main(sys.argv[1:])

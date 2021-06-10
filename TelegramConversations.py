@@ -2,11 +2,6 @@ import copy
 import logging
 from random import randrange
 
-# proxy = 'http://127.0.0.1:41177/'
-# os.environ['http_proxy'] = proxy
-# os.environ['HTTP_PROXY'] = proxy
-# os.environ['https_proxy'] = proxy
-# os.environ['HTTPS_PROXY'] = proxy
 
 from Models.Book import get_books
 from Models.Question import Question
@@ -155,11 +150,11 @@ def error(update, context):
     logger.warning('Update "%s" caused error "%s"', update, context.error)
 
 
-def start_telegram_bot():
+def start_telegram_bot(bot_token):
     # Create the Updater and pass it your bot's token.
     # Make sure to set use_context=True to use the new context based callbacks
     # Post version 12 this will no longer be necessary
-    updater = Updater("1222775030:AAFCDU_UsBD6mRc5CqYc-ssD9iR5G0zVBWk", use_context=True)
+    updater = Updater(bot_token, use_context=True)
     # Get the dispatcher to register handlers
     dp = updater.dispatcher
 
